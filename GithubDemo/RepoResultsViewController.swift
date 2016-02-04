@@ -28,6 +28,8 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         // Initialize tableView
         tableView.dataSource = self
         tableView.delegate = self
+        //tableView.estimatedRowHeight = 100
+        //tableView.rowHeight = UITableViewAutomaticDimension
 
         // Add SearchBar to the NavigationBar
         searchBar.sizeToFit()
@@ -46,7 +48,10 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("GithubCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("GithubCell", forIndexPath: indexPath) as! GithubCell
+        
+        cell.repoContent = repos[indexPath.row]
+        
         return cell
     }
     
