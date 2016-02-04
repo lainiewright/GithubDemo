@@ -10,7 +10,8 @@ import UIKit
 import MBProgressHUD
 
 // Main ViewController
-class RepoResultsViewController: UIViewController {
+class RepoResultsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    @IBOutlet weak var tableView: UITableView!
 
     var searchBar: UISearchBar!
     var searchSettings = GithubRepoSearchSettings()
@@ -23,6 +24,10 @@ class RepoResultsViewController: UIViewController {
         // Initialize the UISearchBar
         searchBar = UISearchBar()
         searchBar.delegate = self
+        
+        // Initialize tableView
+        tableView.dataSource = self
+        tableView.delegate = self
 
         // Add SearchBar to the NavigationBar
         searchBar.sizeToFit()
@@ -32,6 +37,19 @@ class RepoResultsViewController: UIViewController {
         doSearch()
     }
 
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let repos = repos {
+            return repos.count
+        } else {
+            return 0
+        }
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("GithubCell", forIndexPath: indexPath)
+        return cell
+    }
+    
     // Perform the search.
     private func doSearch() {
 
@@ -39,11 +57,15 @@ class RepoResultsViewController: UIViewController {
 
         // Perform request to GitHub API to get the list of repositories
         GithubRepo.fetchRepos(searchSettings, successCallback: { (newRepos) -> Void in
-
+            
+            self.repos = newRepos
+            
             // Print the returned repositories to the output window
             for repo in newRepos {
                 print(repo)
-            }   
+            }
+            
+            self.tableView.reloadData()
 
             MBProgressHUD.hideHUDForView(self.view, animated: true)
             }, error: { (error) -> Void in
