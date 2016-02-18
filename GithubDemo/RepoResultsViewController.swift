@@ -17,9 +17,11 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
     var searchSettings = GithubRepoSearchSettings()
 
     var repos: [GithubRepo]!
+    var minStars = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
 
         // Initialize the UISearchBar
         searchBar = UISearchBar()
@@ -28,8 +30,8 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         // Initialize tableView
         tableView.dataSource = self
         tableView.delegate = self
-        //tableView.estimatedRowHeight = 100
-        //tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.rowHeight = UITableViewAutomaticDimension
 
         // Add SearchBar to the NavigationBar
         searchBar.sizeToFit()
@@ -76,6 +78,12 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
             }, error: { (error) -> Void in
                 print(error)
         })
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let navController = segue.destinationViewController as! UINavigationController
+        let vc = navController.topViewController as! SettingsViewController
+        vc.minStars = minStars
     }
 }
 
